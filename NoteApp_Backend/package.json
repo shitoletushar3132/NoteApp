@@ -5,5 +5,15 @@
     "express-session": "^1.18.1",
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0"
-  }
+  },
+  "name": "noteapp_backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

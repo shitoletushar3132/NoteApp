@@ -32,7 +32,7 @@ const Note = ({ id, note }) => {
     return text.replace(
       urlPattern,
       (url) =>
-        `<a href="${url}" target="_blank" style="color: blue;">${url}</a>`
+        `<a href="${url}" target="_blank" style="color: #08B27E; text-decoration: underline;">${url}</a>`
     );
   };
 
@@ -50,25 +50,25 @@ const Note = ({ id, note }) => {
 
   return (
     <div className="m-2">
-      <div className={`h-72 w-72 bg-yellow-50 relative shadow-md rounded-md`}>
+      <div className="relative h-72 w-72 bg-[#d1f3f1] shadow-md rounded-md">
         <div className="flex justify-between p-2 px-4">
           <div className="text-sm text-slate-600">{note.date}</div>
           <div className="flex gap-4 text-slate-600">
             <button
-              className="rounded-sm hover:bg-green-400 px-1 hover:text-black hover:scale-110"
+              className="rounded-sm p-1 hover:bg-[#08B27E] hover:text-white hover:scale-110 transition-all"
               onClick={handleEdit}
             >
               <FiEdit size={18} />
             </button>
             <button
-              className="rounded-sm hover:bg-red-500 hover:text-black hover:scale-110"
+              className="rounded-sm p-1 hover:bg-[#F56565] hover:text-white hover:scale-110 transition-all"
               onClick={() => handleDelete(id)}
             >
               <MdOutlineDelete size={22} />
             </button>
           </div>
         </div>
-        <div className="p-1.5 overflow-y-scroll max-h-56 h-56">
+        <div className="p-2 overflow-y-auto max-h-56 h-56">
           {isEditing ? (
             <textarea
               className="w-full h-full p-2 border border-gray-300 rounded-md resize-none"

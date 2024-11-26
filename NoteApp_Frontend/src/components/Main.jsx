@@ -14,7 +14,7 @@ const Main = () => {
         height: "calc(100vh - 112px)",
       }}
     >
-      <div className="bg-[black] bg-opacity-25 h-full overflow-y-scroll">
+      <div className="bg-[black] bg-opacity-25 h-full overflow-y-auto">
         <div className="flex justify-center items-center">
           <div className="flex flex-wrap items-center justify-center gap-5">
             {notes.map((note) => (

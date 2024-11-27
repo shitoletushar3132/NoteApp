@@ -14,3 +14,7 @@ export const test = () => api.get("/notes");
 export const logout = () => api.get("/logout");
 
 export const addNote = (notesData) => api.post("/addNotes", notesData);
+
+export const getUserData = () => api.get("/userData")
+
+export const getNotes = () => api.get("/notes")

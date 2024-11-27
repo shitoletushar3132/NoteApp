@@ -1,31 +1,46 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { RiFileAddLine } from "react-icons/ri";
-import { NotesContext } from "../context/NotesContext";
 import { FaRegUser } from "react-icons/fa";
 import { BiLogIn } from "react-icons/bi";
-import { NavLink } from "react-router-dom";
-import { logout, test } from "./api";
-import Cookies from "js-cookie";
+import { NavLink, useNavigate } from "react-router-dom";
+import { NotesContext } from "../context/NotesContext";
+import { logout, addNote, getUserData, getNotes } from "./api";
 
 const Header = () => {
-  const { addNote, userData, removeUserData } = useContext(NotesContext);
+  const { userData, setUserData, setNotes } = useContext(NotesContext);
   const [showLogin, setShowLogin] = useState(false);
   const loginRef = useRef(null);
+  const navigate = useNavigate();
 
-  // Handle clicks outside the dropdown
-  const handleClickOutside = (e) => {
-    if (loginRef.current && !loginRef.current.contains(e.target)) {
-      setShowLogin(false);
-    }
+  // Fetch user data on component mount
+  const fetchNotes = async () => {
+    const data = await getNotes();
+    setNotes(data?.data?.notes);
+    console.log(data);
   };
+  useEffect(() => {
+    fetchNotes();
+    const fetchUserData = async () => {
+      const data = await getUserData();
+      setUserData(data?.data);
+    };
+    fetchUserData();
+  }, [setUserData]);
 
-  React.useEffect(() => {
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (loginRef.current && !loginRef.current.contains(e.target)) {
+        setShowLogin(false);
+      }
+    };
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  const handleAddNewClick = () => {
-    const newNoteData = {
+  // Add a new note
+  const handleAddNote = () => {
+    const newNote = {
       id: Date.now(),
       content: "To add note click edit button👆",
       date: new Date().toLocaleDateString(),
@@ -35,44 +50,49 @@ const Header = () => {
         hour12: true,
       }),
     };
-    addNote(newNoteData);
+
+    addNote(newNote);
+    fetchNotes();
   };
 
+  // Logout handler
   const handleLogout = () => {
+    setUserData({});
     logout();
-    removeUserData();
-    console.log("User logged out");
   };
 
   return (
     <header className="bg-[#BCFFFA] flex justify-between items-center p-4 shadow-lg">
-      <div className="text-2xl font-bold text-[#333]" onClick={() => test()}>
-        TS NOTES
-      </div>
-      <div className="hidden md:flex">
+      {/* Logo */}
+      <div className="text-2xl font-bold text-[#333]">TS NOTES</div>
+
+      {/* Greeting */}
+      <div className="hidden md:block">
         {userData?.name
           ? `Welcome, ${userData.name}!`
-          : "Login for Accessing notes anywhere"}
+          : "Login to access your notes anywhere"}
       </div>
+
+      {/* Actions */}
       <div className="flex gap-4 items-center">
-        {/* Add New Note Button */}
+        {/* Add Note Button */}
         <NavLink to={"/"}>
           <button
-            className="flex items-center justify-center bg-[#08B27E] rounded-lg p-2 text-white font-semibold hover:bg-[#06a768] transition duration-200"
-            onClick={handleAddNewClick}
+            className="flex items-center bg-[#08B27E] rounded-lg px-4 py-2 text-white font-semibold hover:bg-[#06a768] transition"
+            onClick={handleAddNote}
           >
-            <RiFileAddLine size={22} />
+            <RiFileAddLine size={20} />
+
             <span className="ml-2">Add New</span>
           </button>
         </NavLink>
 
-        {/* Login/Logout Dropdown */}
+        {/* Profile/Login Dropdown */}
         <div className="relative" ref={loginRef}>
           <button
-            className="flex items-center justify-center bg-transparent border-none rounded-full p-1"
+            className="flex items-center justify-center rounded-full"
             onClick={() => setShowLogin(!showLogin)}
             aria-expanded={showLogin}
-            aria-label="Toggle login dropdown"
           >
             {userData?.image ? (
               <img
@@ -81,17 +101,17 @@ const Header = () => {
                 className="h-9 w-9 rounded-full object-cover"
               />
             ) : (
-              <FaRegUser size={35} className="text-[#333]" />
+              <FaRegUser size={30} className="text-[#333]" />
             )}
           </button>
 
           {showLogin && (
-            <div className="absolute right-0 mt-2 w-36 bg-white border border-gray-300 rounded-md shadow-md z-50">
+            <div className="absolute right-0 mt-2 w-36 bg-white border rounded-md shadow-md z-50">
               {!userData?.name ? (
                 <NavLink to={"/login"} onClick={() => setShowLogin(false)}>
-                  <div className="flex justify-between items-center h-12 px-3 text-gray-700">
+                  <div className="flex items-center justify-between px-3 py-2 text-gray-700">
                     <span className="text-sm">Login</span>
-                    <BiLogIn size={25} />
+                    <BiLogIn size={20} />
                   </div>
                 </NavLink>
               ) : (

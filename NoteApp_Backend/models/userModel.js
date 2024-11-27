@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const NoteSchema = new mongoose.Schema({
+    id: {
+        type: String,
+        required: true,
+    },
     content: {
         type: String,
         required: true,

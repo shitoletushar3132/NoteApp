@@ -1,10 +1,20 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Background from "../assets/Background2.jpg";
 import Note from "./Note";
 import { NotesContext } from "../context/NotesContext";
+import { useNavigate } from "react-router-dom";
+import { getNotes } from "./api";
 
 const Main = () => {
-  const { notes } = useContext(NotesContext);
+  const { notes, userData } = useContext(NotesContext);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!userData._id) {
+      navigate("/login");
+    }
+  }, [userData]);
 
   return (
     <div

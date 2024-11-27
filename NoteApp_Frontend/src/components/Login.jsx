@@ -7,7 +7,7 @@ import { NotesContext } from "../context/NotesContext";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { addUserData, userData } = useContext(NotesContext);
+  const { setUserData, userData } = useContext(NotesContext);
   const navigate = useNavigate();
 
   // Redirect if already logged in
@@ -21,7 +21,7 @@ const Login = () => {
     try {
       if (authResult.code) {
         const result = await googleAuth(authResult.code);
-        addUserData(result?.data?.user);
+        setUserData(result?.data?.user);
       }
     } catch (error) {
       console.error("Error while requesting Google code:", error);

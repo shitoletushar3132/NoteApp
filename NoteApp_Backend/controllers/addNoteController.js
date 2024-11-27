@@ -11,25 +11,21 @@ const addNoteController = async (req, res) => {
     const notes = req.body;
 
     try {
-        if (Array.isArray(notes)) {
-            // Adding multiple notes
-            await UserModel.findByIdAndUpdate(
-                userId,
-                { $push: { notes: { $each: notes } } },
-                { new: true } // Return updated document
-            );
-            return res.status(200).json({ message: "Notes added successfully." });
-        } else if (typeof notes === "object" && notes.content && notes.date && notes.time) {
-            // Adding a single note
-            await UserModel.findByIdAndUpdate(
-                userId,
-                { $push: { notes: notes } },
-                { new: true } // Return updated document
-            );
-            return res.status(200).json({ message: "Note added successfully." });
-        } else {
-            return res.status(400).json({ error: "Invalid note format." });
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found." });
         }
+
+        user.notes.push(notes)
+
+        await user.save()
+
+        return res.status(200).json({
+            message: "Note added successfully.",
+            notes: user.notes, // Return the updated notes list
+        });
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "An error occurred while adding the note." });
